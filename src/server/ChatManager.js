@@ -1,3 +1,5 @@
+let ColorAndNumbers = require("./games/ColorAndNumber");
+
 module.exports = class ChatManager {
   waitingClient = null;
   chats = [];
@@ -22,9 +24,12 @@ module.exports = class ChatManager {
 
 class Chat {
   constructor(members, closeChat) {
+    const { generateId } = this;
+
     this.members = members;
     this.closeChat = closeChat;
-    this.id = Math.random().toString(36).substring(7);
+    this.gameListenerList = [];
+    this.id = generateId();
     this.start();
   }
 
@@ -43,4 +48,63 @@ class Chat {
     });
   }
 
+  initializeGame = (gameKey) => {
+    const { game } = this;
+
+    if (!game) {
+      this.gameKey = gameKey;
+      let Game = { COLOR_AND_NUMBER: ColorAndNumbers }[gameKey];
+      this.game = new Game(
+        this.members[0],
+        this.members[1],
+        this.startGame,
+        this.triggerGameEvent,
+        this.registerGameEventListener
+      );
+    }
+  };
+
+  stopGame = () => {
+    const { members, game, gameListenerList } = this;
+
+    members.forEach((member) => member.emit("gameClosed"));
+    game.resetPlayers();
+    game = undefined;
+    gameListenerList.forEach(({ event, callback }) =>
+      members.forEach((member) => {
+        member.removeListener(event, callback);
+        this.gameListenerList = this.gameListenerList.filter(
+          (listener) => listener.event !== event
+        );
+      })
+    );
+  };
+
+  startGame = (gameOptionsPlayer0, gameOptionsPlayer1) => {
+    const { gameKey, members } = this;
+
+    members.forEach((member, playerNumber) =>
+      member.emit(
+        "startGame",
+        playerNumber == 0 ? gameOptionsPlayer0 : gameOptionsPlayer1,
+        gameKey
+      )
+    );
+  };
+
+  triggerGameEvent = (player, key, data) => {
+    const { gameKey } = this;
+
+    player.emit(gameKey + "_" + key, data);
+  };
+
+  registerGameEventListener = (player, key, callback) => {
+    const { gameKey, gameListenerList } = this;
+
+    let event = gameKey + "_" + key;
+    player.on(event, callback);
+    this.gameListenerList = [...gameListenerList, { event, callback }];
+  };
+
+  generateId = () => Math.random().toString(36).substring(7);
 }
