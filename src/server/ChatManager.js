@@ -4,12 +4,23 @@ module.exports = class ChatManager {
   waitingClient = null;
   chats = [];
 
-  addClient(socket) {
-    const { waitingClient, closeChat, chats } = this;
+  addClient(socket, name) {
+    const { closeChat, chats } = this;
 
-    if (!waitingClient) this.waitingClient = socket;
-    else {
-      this.chats = [...chats, new Chat([waitingClient, socket], closeChat)];
+    const onWaitingClientDisconnect = () => (this.waitingClient = null);
+    socket.name = name;
+    if (!this.waitingClient) {
+      socket.on("disconnect", onWaitingClientDisconnect);
+      this.waitingClient = socket;
+    } else {
+      this.waitingClient.removeListener(
+        "disconnect",
+        onWaitingClientDisconnect
+      );
+      this.chats = [
+        ...chats,
+        new Chat([this.waitingClient, socket], closeChat),
+      ];
       this.waitingClient = null;
     }
   }
@@ -39,7 +50,7 @@ class Chat {
     members.forEach((member, playerNumber) => {
       let otherMember = members[playerNumber === 0 ? 1 : 0];
       member.on("disconnect", () => closeChat(id, otherMember));
-      member.emit("startChat");
+      member.emit("startChat", otherMember.name);
       member.on("chatResponse", (text) =>
         otherMember.emit("chatResponse", text)
       );

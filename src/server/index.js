@@ -9,10 +9,7 @@ let { PORT, NODE_ENV } = process.env;
 const chatManager = new ChatManager();
 
 io.on("connection", function (socket) {
-
-  socket.on("joinChat", () => {
-    chatManager.addClient(socket);
-  })  
+  socket.on("joinChat", (name) => chatManager.addClient(socket, name));
 });
 
 server.listen(PORT);
