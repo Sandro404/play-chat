@@ -2,8 +2,18 @@ var express = require("express");
 var app = express();
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
+var ChatManager = require("./ChatManager");
 
 let { PORT, NODE_ENV } = process.env;
+
+const chatManager = new ChatManager();
+
+io.on("connection", function (socket) {
+
+  socket.on("joinChat", () => {
+    chatManager.addClient(socket);
+  })  
+});
 
 server.listen(PORT);
 
