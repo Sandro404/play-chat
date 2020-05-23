@@ -14,7 +14,7 @@ module.exports = class ColorAndNumber {
     this.initializeGame();
   }
 
-  getGameOptions(playerNumber) {
+  getGameOptions = (playerNumber) => {
     const { currentPlayerNumber, startingCard, player1, player2 } = this;
 
     return {
