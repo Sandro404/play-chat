@@ -4,6 +4,16 @@ import ColorAndNumber from "./ColorAndNumber";
 class Game extends PureComponent {
   gameListenerList = [];
 
+  componentWillUnmount() {
+    const { socket } = this.props;
+    const { gameListenerList } = this;
+
+    gameListenerList.forEach(({ event, callback }) =>
+      socket.removeListener(event, callback)
+    );
+    this.gameListenerList = [];
+  }
+
   render() {
     const { socket, gameKey, showFullscreenChat, gameOptions } = this.props;
     const {
@@ -37,12 +47,7 @@ class Game extends PureComponent {
 
   exitGame = () => {
     const { socket } = this.props;
-    const { gameListenerList } = this;
 
-    gameListenerList.forEach(({ event, callback }) =>
-      socket.removeListener(event, callback)
-    );
-    this.gameListenerList = [];
     socket.emit("stopGame");
   };
 
