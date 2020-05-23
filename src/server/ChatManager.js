@@ -80,7 +80,7 @@ class Chat {
 
     members.forEach((member) => member.emit("gameClosed"));
     game.resetPlayers();
-    game = undefined;
+    this.game = undefined;
     gameListenerList.forEach(({ event, callback }) =>
       members.forEach((member) => {
         member.removeListener(event, callback);

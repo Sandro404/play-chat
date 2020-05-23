@@ -25,13 +25,13 @@ class Chat extends Component {
       })
     );
     socket.on("chatResponse", (text) =>
-      this.setState({ chat: [...chat, { isResponse: true, text }] })
+      this.setState({ chat: [...this.state.chat, { isResponse: true, text }] })
     );
     socket.on("startGame", (gameOptions, game) =>
       this.setState({ game, gameOptions }, () =>
         this.setState({
           chat: [
-            ...chat,
+            ...this.state.chat,
             { isSystemMessage: true, text: `Game '${game}' has started.` },
           ],
         })

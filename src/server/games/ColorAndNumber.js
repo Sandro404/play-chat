@@ -23,7 +23,7 @@ module.exports = class ColorAndNumber {
       startingCard,
       opponentCardsCount: 8,
     };
-  }
+  };
 
   resetPlayers = () => {
     this.player1.deck = undefined;
@@ -32,24 +32,21 @@ module.exports = class ColorAndNumber {
 
   initializeGame() {
     let {
-      currentPlayerNumber,
       player1,
       player2,
       startGame,
-      startingCard,
       getGameOptions,
       generateStarterDeck,
       generateCard,
       registerGameEventListener,
       triggerGameEvent,
-      playedCards,
     } = this;
 
     // initialize parameters
     player1.deck = generateStarterDeck();
     player2.deck = generateStarterDeck();
     this.startingCard = generateCard();
-    this.playedCards = [startingCard];
+    this.playedCards = [this.startingCard];
     this.currentPlayerNumber = Math.random() < 0.5 ? 0 : 1;
 
     // create events
@@ -69,6 +66,7 @@ module.exports = class ColorAndNumber {
       // request to play card
       registerGameEventListener(player, "playCard", (card, onPlayedCard) => {
         const { color, text } = card;
+        const { playedCards, currentPlayerNumber } = this;
 
         // if it's this player's turn
         if (currentPlayerNumber == playerNumber) {
