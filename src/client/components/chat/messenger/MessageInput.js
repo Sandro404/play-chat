@@ -1,6 +1,7 @@
 import { Button, InputAdornment, OutlinedInput } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import SendIcon from "@material-ui/icons/Send";
+import classnames from "classnames";
 import React, { Component } from "react";
 
 class MessageInput extends Component {
@@ -19,12 +20,11 @@ class MessageInput extends Component {
     } = this.props;
 
     return (
-      <div classname={fullWidth}>
+      <div className={fullWidth}>
         <OutlinedInput
-          classname={inputWidth}
+          className={classnames(inputWidth, "TextField-without-border-radius")}
           color="primary"
           placeholder="Type a message"
-          className="TextField-without-border-radius"
           value={inputValue}
           onChange={(e) => this.setState({ inputValue: e.target.value })}
           endAdornment={
@@ -33,7 +33,7 @@ class MessageInput extends Component {
           onKeyDown={_handleKeyDown}
         />
         <Button
-          classname={buttonStyle}
+          className={buttonStyle}
           disableElevation
           variant="contained"
           color="primary"

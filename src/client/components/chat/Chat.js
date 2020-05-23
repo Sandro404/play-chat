@@ -115,14 +115,14 @@ class Chat extends Component {
 
     return (
       <div
-        classname={classNames({
+        className={classNames({
           [fullWidth]: showFullscreenChat,
           [partialWidth]: !showFullscreenChat,
           [margin]: true,
         })}
       >
         <div>{titlebar}</div>
-        <div id="chat-container" classname={messagesContainer}>
+        <div id="chat-container" className={messagesContainer}>
           {messages}
         </div>
         <div>{messageInput}</div>

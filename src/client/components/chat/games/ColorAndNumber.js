@@ -70,6 +70,9 @@ class ColorAndNumber extends PureComponent {
       exitGame,
       classes: { gameContainer, reduceOpacity, upperGameArea },
     } = this.props;
+
+    if (!game) return "";
+
     const {
       deck,
       isPlayingSocket,
@@ -79,7 +82,7 @@ class ColorAndNumber extends PureComponent {
     } = game;
 
     return (
-      <div classname={gameContainer}>
+      <div className={gameContainer}>
         {(showWinScreen || showLoseScreen) && (
           <GameNotification
             text={showWinScreen ? "You win!" : "You lose!"}
